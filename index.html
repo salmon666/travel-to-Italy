@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>義大利豪華文青之旅</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        ita: {
+                            green: '#145A32',
+                            white: '#F9F6F0',
+                            red: '#922B21',
+                            gold: '#B8860B'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Noto Sans TC"', 'sans-serif'],
+                        serif: ['"Playfair Display"', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #F9F6F0; }
+        /* 隱藏滾動條 */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* 垂直時間軸樣式 */
+        .timeline-container { position: relative; padding-left: 2rem; }
+        .timeline-container::before {
+            content: '';
+            position: absolute;
+            left: 0.75rem;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: #145A32;
+            opacity: 0.3;
+        }
+        .timeline-item { position: relative; margin-bottom: 2rem; }
+        .timeline-icon {
+            position: absolute;
+            left: -2rem;
+            top: 0.25rem;
+            width: 1.5rem;
+            height: 1.5rem;
+            border-radius: 50%;
+            background-color: #F9F6F0;
+            border: 2px solid #145A32;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #145A32;
+            font-size: 0.75rem;
+            z-index: 10;
+        }
+        .timeline-item:last-child { margin-bottom: 0; }
+        
+        /* 彈出視窗動畫 */
+        #taxiModal { transition: opacity 0.3s ease; }
+        .modal-content { transition: transform 0.3s ease; }
+    </style>
+</head>
+<body class="text-gray-800 font-sans antialiased max-w-lg mx-auto bg-white min-h-screen shadow-2xl relative">
+
+    <header class="bg-ita-green text-ita-white sticky top-0 z-40 shadow-md">
+        <div class="p-4 text-center">
+            <h1 class="text-2xl font-serif font-semibold tracking-widest"><i class="fa-solid fa-earth-europe mr-2 text-ita-red"></i>La Vita è Bella</h1>
+            <p class="text-xs text-ita-white/80 mt-1">2026 義大利自助旅行</p>
+        </div>
+        <nav class="flex justify-around bg-ita-green/90 border-t border-ita-white/20 text-sm font-medium">
+            <button onclick="switchTab('itinerary')" class="flex-1 py-3 text-center hover:bg-white/10 tab-btn active border-b-2 border-ita-red" id="tab-itinerary">
+                <i class="fa-solid fa-route block mb-1"></i>行程表
+            </button>
+            <button onclick="switchTab('customs')" class="flex-1 py-3 text-center hover:bg-white/10 tab-btn border-b-2 border-transparent text-ita-white/60" id="tab-customs">
+                <i class="fa-solid fa-passport block mb-1"></i>通關英文
+            </button>
+            <button onclick="switchTab('info')" class="flex-1 py-3 text-center hover:bg-white/10 tab-btn border-b-2 border-transparent text-ita-white/60" id="tab-info">
+                <i class="fa-solid fa-circle-info block mb-1"></i>實用資訊
+            </button>
+        </nav>
+    </header>
+
+    <main class="p-4 pb-20">
+        
+        <section id="sec-itinerary" class="tab-content block">
+            <div class="flex space-x-3 overflow-x-auto no-scrollbar pb-3 mb-4 sticky top-24 bg-white/90 backdrop-blur z-30 py-2 border-b border-gray-100">
+                <button onclick="showDay(1)" class="day-btn shrink-0 px-4 py-1.5 rounded-full bg-ita-green text-white text-sm font-bold shadow transition">Day 1-2 羅馬</button>
+                <button onclick="showDay(3)" class="day-btn shrink-0 px-4 py-1.5 rounded-full bg-gray-100 text-gray-600 text-sm font-bold shadow transition">Day 3 羅馬</button>
+                <button onclick="showDay(4)" class="day-btn shrink-0 px-4 py-1.5 rounded-full bg-gray-100 text-gray-600 text-sm font-bold shadow transition">Day 4 梵蒂岡</button>
+                <button onclick="showDay(5)" class="day-btn shrink-0 px-4 py-1.5 rounded-full bg-gray-100 text-gray-600 text-sm font-bold shadow transition">Day 5 佛羅倫斯</button>
+                <button onclick="showDay(6)" class="day-btn shrink-0 px-4 py-1.5 rounded-full bg-gray-100 text-gray-600 text-sm font-bold shadow transition">Day 6 佛羅倫斯</button>
+                <button onclick="showDay(8)" class="day-btn shrink-0 px-4 py-1.5 rounded-full bg-gray-100 text-gray-600 text-sm font-bold shadow transition">Day 8 波隆納</button>
+                <button onclick="showDay(9)" class="day-btn shrink-0 px-4 py-1.5 rounded-full bg-gray-100 text-gray-600 text-sm font-bold shadow transition">Day 9 威尼斯</button>
+                <button onclick="showDay(11)" class="day-btn shrink-0 px-4 py-1.5 rounded-full bg-gray-100 text-gray-600 text-sm font-bold shadow transition">Day 11 米蘭</button>
+                <button onclick="showDay(13)" class="day-btn shrink-0 px-4 py-1.5 rounded-full bg-gray-100 text-gray-600 text-sm font-bold shadow transition">Day 13 科莫湖</button>
+            </div>
+
+            <div id="day-1" class="day-content block animate-[fadeIn_0.5s_ease-out]">
+                <div class="h-48 rounded-xl overflow-hidden mb-6 shadow-md relative">
+                    <img src="https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=800&q=80" alt="Rome" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-4">
+                        <h2 class="text-white text-2xl font-serif">6/2 - 6/3 初抵羅馬</h2>
+                    </div>
+                </div>
+                
+                <div class="mb-4 p-3 bg-ita-green/10 rounded-lg border border-ita-green/20 cursor-pointer hover:bg-ita-green/20 transition" onclick="openTaxi('Paci luxury suite', 'Via Nazionale 230, Roma, Italy (請司機導航至此區域)')">
+                    <div class="flex items-center text-ita-green">
+                        <i class="fa-solid fa-bed text-xl mr-3"></i>
+                        <div>
+                            <div class="text-xs font-bold uppercase tracking-wider text-ita-green/70">住宿點擊出示計程車小卡</div>
+                            <div class="font-bold">Paci luxury suite</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-container">
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><i class="fa-solid fa-plane"></i></div>
+                        <h3 class="font-bold text-lg text-ita-green">00:30 啟程</h3>
+                        <p class="text-sm text-gray-600 mt-1">桃園 T2 出發，搭乘阿聯酋航空經杜拜轉機。<br>13:25 抵達羅馬 FCO 機場。</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><i class="fa-solid fa-train"></i></div>
+                        <h3 class="font-bold text-lg text-ita-green">14:35 機場快線</h3>
+                        <p class="text-sm text-gray-600 mt-1">搭乘 Leonardo Express 至羅馬中央車站。</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><i class="fa-solid fa-camera-retro text-ita-red"></i></div>
+                        <h3 class="font-bold text-lg text-ita-green">
+                            <a href="https://maps.google.com/?q=景點名稱" target="_blank" class="hover:text-ita-red underline decoration-ita-red/30 underline-offset-4">鮮花廣場 Campo de' Fiori</a>
+                        </h3>
+                        <p class="text-sm text-gray-600 mt-1">羅馬最熱鬧在地露天市集，可買白披薩夾火腿坐在階梯吃。</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><i class="fa-solid fa-bag-shopping text-ita-gold"></i></div>
+                        <h3 class="font-bold text-lg text-ita-green">
+                            <a href="https://maps.google.com/?q=景點名稱" target="_blank" class="hover:text-ita-gold underline decoration-ita-gold/30 underline-offset-4">金杯咖啡 La Casa Del Caffè</a>
+                        </h3>
+                        <p class="text-sm text-gray-600 mt-1">必買伴手禮：女王咖啡豆、金杯巧克力球。</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><i class="fa-solid fa-monument text-ita-red"></i></div>
+                        <h3 class="font-bold text-lg text-ita-green">
+                            <a href="https://maps.google.com/?q=景點名稱" target="_blank" class="hover:text-ita-red underline decoration-ita-red/30 underline-offset-4">萬神殿 Pantheon</a>
+                        </h3>
+                        <p class="text-sm text-gray-600 mt-1">近兩千年歷史神廟，擁有絕美穹頂。需提早預約，注意服裝儀容。</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><i class="fa-solid fa-camera-retro text-ita-red"></i></div>
+                        <h3 class="font-bold text-lg text-ita-green">
+                            <a href="https://maps.google.com/?q=景點名稱" target="_blank" class="hover:text-ita-red underline decoration-ita-red/30 underline-offset-4">許願池 Fontana di Trevi</a>
+                        </h3>
+                        <p class="text-sm text-gray-600 mt-1">黃昏點燈最浪漫，右手拿硬幣越左肩拋入池中許願重返羅馬。(注意扒手！)</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><i class="fa-solid fa-utensils"></i></div>
+                        <h3 class="font-bold text-lg text-ita-green">
+                            <a href="https://maps.google.com/?q=景點名稱" target="_blank" class="hover:text-ita-green underline decoration-ita-green/30 underline-offset-4">晚餐：Cantina e Cucina</a>
+                        </h3>
+                        <p class="text-sm text-gray-600 mt-1">Google 4.6 星的高評價餐廳。</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="day-3" class="day-content hidden animate-[fadeIn_0.5s_ease-out]">
+                <div class="h-48 rounded-xl overflow-hidden mb-6 shadow-md relative">
+                    <img src="https://images.unsplash.com/photo-1515542622106-78b28af7815d?auto=format&fit=crop&w=800&q=80" alt="Colosseum" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-4">
+                        <h2 class="text-white text-2xl font-serif">6/4 羅馬帝國榮光</h2>
+                    </div>
+                </div>
+                
+                <div class="timeline-container">
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><i class="fa-solid fa-landmark text-ita-red"></i></div>
+                        <h3 class="font-bold text-lg text-ita-green">
+                            <a href="https://maps.google.com/?q=景點名稱" target="_blank" class="hover:text-ita-red underline decoration-ita-red/30 underline-offset-4">08:30 羅馬競技場 Colosseo</a>
+                        </h3>
+                        <p class="text-sm text-gray-600 mt-1">預約第一批入場避開人潮，探索古羅馬角鬥士的舞台。</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><i class="fa-solid fa-monument text-ita-red"></i></div>
+                        <h3 class="font-bold text-lg text-ita-green">
+                            <a href="https://maps.google.com/?q=景點名稱" target="_blank" class="hover:text-ita-red underline decoration-ita-red/30 underline-offset-4">古羅馬廣場 & 帕拉丁山</a>
+                        </h3>
+                        <p class="text-sm text-gray-600 mt-1">古羅馬帝國市中心遺跡與昔日皇帝宮殿豪宅區。</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><i class="fa-solid fa-utensils"></i></div>
+                        <h3 class="font-bold text-lg text-ita-green">
+                            <a href="https://maps.google.com/?q=景點名稱" target="_blank" class="hover:text-ita-green underline decoration-ita-green/30 underline-offset-4">午餐：Achille Al Pantheon di Habana</a>
+                        </h3>
+                        <p class="text-sm text-gray-600 mt-1">預算 €10-20，評分 4.7 顆星。</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><i class="fa-solid fa-landmark text-ita-red"></i></div>
+                        <h3 class="font-bold text-lg text-ita-green">
+                            <a href="https://maps.google.com/?q=景點名稱" target="_blank" class="hover:text-ita-red underline decoration-ita-red/30 underline-offset-4">黃昏 威尼斯廣場</a>
+                        </h3>
+                        <p class="text-sm text-gray-600 mt-1">「結婚蛋糕」維克多艾曼紐二世紀念堂。可搭透明電梯登頂俯瞰古城夕陽。</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="day-4" class="day-content hidden animate-[fadeIn_0.5s_ease-out]">
+                <div class="h-48 rounded-xl overflow-hidden mb-6 shadow-md relative">
+                    <img src="https://images.unsplash.com/photo-1531572753322-ad011ceef8f2?auto=format&fit=crop&w=800&q=80" alt="Vatican" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-4">
+                        <h2 class="text-white text-2xl font-serif">6/5 梵蒂岡聖域</h2>
+                    </div>
+                </div>
+
+                <div class="timeline-container">
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><i class="fa-solid fa-landmark text-ita-red"></i></div>
+                        <h3 class="font-bold text-lg text-ita-green">
+                            <a href="https://maps.google.com/?q=景點名稱" target="_blank" class="hover:text-ita-red underline decoration-ita-red/30 underline-offset-4">08:00 梵蒂岡博物館 & 西斯汀教堂</a>
+                        </h3>
+                        <p class="text-sm text-gray-600 mt-1">必看米開朗基羅《創世紀》與《最後的審判》。建議預約快速通關。</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><i class="fa-solid fa-utensils"></i></div>
+                        <h3 class="font-bold text-lg text-ita-green">
+                            <a href="https://maps.google.com/?q=景點名稱" target="_blank" class="hover:text-ita-green underline decoration-ita-green/30 underline-offset-4">午餐：Da Romolo alla Mole Adriana</a>
+                        </h3>
+                        <p class="text-sm text-gray-600 mt-1">梵蒂岡周邊美食，補充體力。</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><i class="fa-solid fa-church text-ita-red"></i></div>
+                        <h3 class="font-bold text-lg text-ita-green">
+                            <a href="https://maps.google.com/?q=景點名稱" target="_blank" class="hover:text-ita-red underline decoration-ita-red/30 underline-offset-4">13:00 聖彼得大教堂</a>
+                        </h3>
+                        <p class="text-sm text-gray-600 mt-1">世界最大教堂，欣賞《聖殤》。推薦付費登圓頂俯瞰「鑰匙形狀」廣場。</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="day-5" class="day-content hidden animate-[fadeIn_0.5s_ease-out]">
+                <div class="h-48 rounded-xl overflow-hidden mb-6 shadow-md relative">
+                    <img src="https://images.unsplash.com/photo-1543429257-2aa8da6fb1e2?auto=format&fit=crop&w=800&q=80" alt="Florence" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-4">
+                        <h2 class="text-white text-2xl font-serif">6/6 佛羅倫斯漫步</h2>
+                    </div>
+                </div>
+                
+                <div class="mb-4 p-3 bg-ita-green/10 rounded-lg border border-ita-green/20 cursor-pointer hover:bg-ita-green/20 transition" onclick="openTaxi('啊斯特麗德酒店', 'Piazza della Stazione, Firenze, Italy (請導航至佛羅倫斯車站附近)')">
+                    <div class="flex items-center text-ita-green">
+                        <i class="fa-solid fa-bed text-xl mr-3"></i>
+                        <div>
+                            <div class="text-xs font-bold uppercase tracking-wider text-ita-green/70">住宿點擊出示計程車小卡</div>
+                            <div class="font-bold">啊斯特麗德酒店 (Hotel Astrid)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-container">
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><i class="fa-solid fa-train"></i></div>
+                        <h3 class="font-bold text-lg text-ita-green">08:25 前往佛羅倫斯</h3>
+                        <p class="text-sm text-gray-600 mt-1">搭乘 Italo 私鐵從羅馬前往 Firenze S.M.Novella。</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><i class="fa-solid fa-store text-ita-gold"></i></div>
+                        <h3 class="font-bold text-lg text-ita-green">
+                            <a href="https://maps.google.com/?q=景點名稱" target="_blank" class="hover:text-ita-gold underline decoration-ita-gold/30 underline-offset-4">中央市場 Mercato Centrale</a>
+                        </h3>
+                        <p class="text-sm text-gray-600 mt-1">外圍逛皮件，2樓美食廣場必吃「牛肚包(Lampredotto)」。</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><i class="fa-solid fa-camera-retro text-ita-red"></i></div>
+                        <h3 class="font-bold text-lg text-ita-green">
+                            <a href="https://maps.google.com/?q=景點名稱" target="_blank" class="hover:text-ita-red underline decoration-ita-red/30 underline-offset-4">領主廣場 Piazza della Signoria</a>
+                        </h3>
+                        <p class="text-sm text-gray-600 mt-1">免費的露天雕刻博物館，欣賞海神噴泉與大衛像複製品。</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><i class="fa-solid fa-bridge-water text-ita-red"></i></div>
+                        <h3 class="font-bold text-lg text-ita-green">
+                            <a href="https://maps.google.com/?q=景點名稱" target="_blank" class="hover:text-ita-red underline decoration-ita-red/30 underline-offset-4">黃昏 老橋 Ponte Vecchio</a>
+                        </h3>
+                        <p class="text-sm text-gray-600 mt-1">阿諾河上最古老橋樑，夕陽絕美，充滿文藝復興浪漫氛圍。</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><i class="fa-solid fa-utensils"></i></div>
+                        <h3 class="font-bold text-lg text-ita-green">
+                            <a href="https://maps.google.com/?q=景點名稱" target="_blank" class="hover:text-ita-green underline decoration-ita-green/30 underline-offset-4">宵夜：All'Antico Vinaio</a>
+                        </h3>
+                        <p class="text-sm text-gray-600 mt-1">超人氣排隊名店，義式三明治巨無霸。</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="day-6" class="day-content hidden animate-[fadeIn_0.5s_ease-out]">
+                <div class="h-48 rounded-xl overflow-hidden mb-6 shadow-md relative">
+                    <img src="https://images.unsplash.com/photo-1528114039593-4366cc08227d?auto=format&fit=crop&w=800&q=80" alt="Florence Duomo" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-4">
+                        <h2 class="text-white text-2xl font-serif">6/7 翡冷翠穹頂與宮殿</h2>
+                    </div>
+                </div>
+                
+                <div class="timeline-container">
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><i class="fa-solid fa-church text-ita-red"></i></div>
+                        <h3 class="font-bold text-lg text-ita-green">
+                            <a href="https://maps.google.com/?q=景點名稱" target="_blank" class="hover:text-ita-red underline decoration-ita-red/30 underline-offset-4">08:30 聖母百花大教堂</a>
+                        </h3>
+                        <p class="text-sm text-gray-600 mt-1">綠白粉紅大理石外觀。早晨遊客少最適合拍照。</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><i class="fa-solid fa-landmark text-ita-red"></i></div>
+                        <h3 class="font-bold text-lg text-ita-green">
+                            <a href="https://maps.google.com/?q=景點名稱" target="_blank" class="hover:text-ita-red underline decoration-ita-red/30 underline-offset-4">09:30 喬托鐘樓</a>
+                        </h3>
+                        <p class="text-sm text-gray-600 mt-1">需爬 414 階樓梯，平視巨大圓頂，風景震撼 (需先預約)。</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><i class="fa-solid fa-leaf text-ita-green"></i></div>
+                        <h3 class="font-bold text-lg text-ita-green">
+                            <a href="https://maps.google.com/?q=景點名稱" target="_blank" class="hover:text-ita-green underline decoration-ita-green/30 underline-offset-4">14:00 皮蒂宮 & 波波里花園</a>
+                        </h3>
+                        <p class="text-sm text-gray-600 mt-1">梅迪奇家族豪華宮殿與巨大皇家園林，眺望托斯卡尼風光。</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><i class="fa-solid fa-utensils"></i></div>
+                        <h3 class="font-bold text-lg text-ita-green">
+                            <a href="https://maps.google.com/?q=景點名稱" target="_blank" class="hover:text-ita-green underline decoration-ita-green/30 underline-offset-4">晚餐：Ristorante buca mario</a>
+                        </h3>
+                        <p class="text-sm text-gray-600 mt-1">佛羅倫斯大牛排！務必提前訂位。</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="day-8" class="day-content hidden animate-[fadeIn_0.5s_ease-out]">
+                <div class="h-48 rounded-xl overflow-hidden mb-6 shadow-md relative">
+                    <img src="https://images.unsplash.com/photo-1589139589332-68c85eb0bcaf?auto=format&fit=crop&w=800&q=80" alt="Bologna" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-4">
+                        <h2 class="text-white text-2xl font-serif">6/9 胖子之城 波隆納</h2>
+                    </div>
+                </div>
+
+                <div class="mb-4 p-3 bg-ita-green/10 rounded-lg border border-ita-green/20 cursor-pointer hover:bg-ita-green/20 transition" onclick="openTaxi('卡弗爾酒店', 'Hotel Cavour, Bologna, Italy (請導航至波隆納車站附近)')">
+                    <div class="flex items-center text-ita-green">
+                        <i class="fa-solid fa-bed text-xl mr-3"></i>
+                        <div>
+                            <div class="text-xs font-bold uppercase tracking-wider text-ita-green/70">住宿點擊出示計程車小卡</div>
+                            <div class="font-bold">卡弗爾酒店 (Hotel Cavour)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-container">
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><i class="fa-solid fa-train"></i></div>
+                        <h3 class="font-bold text-lg text-ita-green">09:05 前往波隆納</h3>
+                        <p class="text-sm text-gray-600 mt-1">搭乘 Italo 私鐵從佛羅倫斯抵達 Bologna Centrale。</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><i class="fa-solid fa-church text-ita-red"></i></div>
+                        <h3 class="font-bold text-lg text-ita-green">
+                            <a href="https://maps.google.com/?q=景點名稱" target="_blank" class="hover:text-ita-red underline decoration-ita-red/30 underline-offset-4">主廣場 & 海神噴泉</a>
+                        </h3>
+                        <p class="text-sm text-gray-600 mt-1">波隆納的客廳，看未完工的聖白托略大教堂與瑪莎拉蒂 Logo 靈感噴泉。</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><i class="fa-solid fa-utensils"></i></div>
+                        <h3 class="font-bold text-lg text-ita-green">
+                            <a href="https://maps.google.com/?q=景點名稱" target="_blank" class="hover:text-ita-green underline decoration-ita-green/30 underline-offset-4">午餐：中世紀古老市集 Quadrilatero</a>
+                        </h3>
+                        <p class="text-sm text-gray-600 mt-1">全義大利最好吃！必點波隆納肉醬麵 (Tagliatelle al Ragù)。</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><i class="fa-solid fa-book text-ita-gold"></i></div>
+                        <h3 class="font-bold text-lg text-ita-green">
+                            <a href="https://maps.google.com/?q=景點名稱" target="_blank" class="hover:text-ita-gold underline decoration-ita-gold/30 underline-offset-4">阿奇吉納西歐宮 & 解剖劇場</a>
+                        </h3>
+                        <p class="text-sm text-gray-600 mt-1">西方最古老大學舊址，徽章牆與木造解剖階梯教室極具歷史感。</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="day-9" class="day-content hidden animate-[fadeIn_0.5s_ease-out]">
+                <div class="h-48 rounded-xl overflow-hidden mb-6 shadow-md relative">
+                    <img src="https://images.unsplash.com/photo-1514890547357-a9ee288728e0?auto=format&fit=crop&w=800&q=80" alt="Venice" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-4">
+                        <h2 class="text-white text-2xl font-serif">6/10 水都威尼斯</h2>
+                    </div>
+                </div>
+
+                <div class="mb-4 p-3 bg-ita-green/10 rounded-lg border border-ita-green/20 cursor-pointer hover:bg-ita-green/20 transition" onclick="openTaxi('Combo Venezia', 'Campo dei Gesuiti, Cannaregio 4878, Venezia (請停靠最近水上巴士站)')">
+                    <div class="flex items-center text-ita-green">
+                        <i class="fa-solid fa-bed text-xl mr-3"></i>
+                        <div>
+                            <div class="text-xs font-bold uppercase tracking-wider text-ita-green/70">住宿點擊出示計程車小卡</div>
+                            <div class="font-bold">Combo Venezia</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-container">
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><i class="fa-solid fa-train"></i></div>
+                        <h3 class="font-bold text-lg text-ita-green">08:21 前往威尼斯</h3>
+                        <p class="text-sm text-gray-600 mt-1">搭乘 Italo 抵達 Venezia St. Lucia，啟用 ACTV 一日券。</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><i class="fa-solid fa-camera-retro text-ita-red"></i></div>
+                        <h3 class="font-bold text-lg text-ita-green">
+                            <a href="https://maps.google.com/?q=景點名稱" target="_blank" class="hover:text-ita-red underline decoration-ita-red/30 underline-offset-4">沈船書店</a>
+                        </h3>
+                        <p class="text-sm text-gray-600 mt-1">將書放在浴缸與貢多拉的奇特書店，建議提早排隊。</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><i class="fa-solid fa-bridge-water text-ita-red"></i></div>
+                        <h3 class="font-bold text-lg text-ita-green">
+                            <a href="https://maps.google.com/?q=景點名稱" target="_blank" class="hover:text-ita-red underline decoration-ita-red/30 underline-offset-4">阿爾托橋</a>
+                        </h3>
+                        <p class="text-sm text-gray-600 mt-1">大運河最古老石造拱橋，經典明信片視角。</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><i class="fa-solid fa-landmark text-ita-red"></i></div>
+                        <h3 class="font-bold text-lg text-ita-green">
+                            <a href="https://maps.google.com/?q=景點名稱" target="_blank" class="hover:text-ita-red underline decoration-ita-red/30 underline-offset-4">下午 聖馬可廣場</a>
+                        </h3>
+                        <p class="text-sm text-gray-600 mt-1">「歐洲最美的客廳」，參觀大教堂、總督宮與嘆息橋。</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="day-11" class="day-content hidden animate-[fadeIn_0.5s_ease-out]">
+                <div class="h-48 rounded-xl overflow-hidden mb-6 shadow-md relative">
+                    <img src="https://images.unsplash.com/photo-1610016302534-6f676b8849b2?auto=format&fit=crop&w=800&q=80" alt="Milan Duomo" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-4">
+                        <h2 class="text-white text-2xl font-serif">6/12 時尚之都米蘭</h2>
+                    </div>
+                </div>
+
+                <div class="mb-4 p-3 bg-ita-green/10 rounded-lg border border-ita-green/20 cursor-pointer hover:bg-ita-green/20 transition" onclick="openTaxi('亞特蘭迪克C 酒店', 'Hotel Atlantic, Via Napo Torriani 24, Milano (中央車站旁)')">
+                    <div class="flex items-center text-ita-green">
+                        <i class="fa-solid fa-bed text-xl mr-3"></i>
+                        <div>
+                            <div class="text-xs font-bold uppercase tracking-wider text-ita-green/70">住宿點擊出示計程車小卡</div>
+                            <div class="font-bold">亞特蘭迪克C 酒店</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-container">
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><i class="fa-solid fa-church text-ita-red"></i></div>
+                        <h3 class="font-bold text-lg text-ita-green">
+                            <a href="https://maps.google.com/?q=景點名稱" target="_blank" class="hover:text-ita-red underline decoration-ita-red/30 underline-offset-4">09:00 米蘭大教堂</a>
+                        </h3>
+                        <p class="text-sm text-gray-600 mt-1">世界最大哥德教堂之一，必體驗「登頂步道」穿梭尖塔。</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><i class="fa-solid fa-store text-ita-gold"></i></div>
+                        <h3 class="font-bold text-lg text-ita-green">
+                            <a href="https://maps.google.com/?q=景點名稱" target="_blank" class="hover:text-ita-gold underline decoration-ita-gold/30 underline-offset-4">埃馬努埃萊二世拱廊</a>
+                        </h3>
+                        <p class="text-sm text-gray-600 mt-1">絕美19世紀玻璃圓頂，尋找「金牛座馬賽克」轉圈祈求好運。</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><i class="fa-solid fa-utensils"></i></div>
+                        <h3 class="font-bold text-lg text-ita-green">
+                            <a href="https://maps.google.com/?q=景點名稱" target="_blank" class="hover:text-ita-green underline decoration-ita-green/30 underline-offset-4">午餐：Panzerotti Luini / Spontini</a>
+                        </h3>
+                        <p class="text-sm text-gray-600 mt-1">大教堂附近超人氣平價美食。</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><i class="fa-solid fa-mask text-ita-red"></i></div>
+                        <h3 class="font-bold text-lg text-ita-green">
+                            <a href="https://maps.google.com/?q=景點名稱" target="_blank" class="hover:text-ita-red underline decoration-ita-red/30 underline-offset-4">下午 斯卡拉大劇院 & 布雷拉畫廊</a>
+                        </h3>
+                        <p class="text-sm text-gray-600 mt-1">文青氣息布雷拉區，欣賞文藝復興經典畫作。</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="day-13" class="day-content hidden animate-[fadeIn_0.5s_ease-out]">
+                <div class="h-48 rounded-xl overflow-hidden mb-6 shadow-md relative">
+                    <img src="https://images.unsplash.com/photo-1602002598361-9c60a2b5e28a?auto=format&fit=crop&w=800&q=80" alt="Lake Como" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-4">
+                        <h2 class="text-white text-2xl font-serif">6/14 絕美科莫湖</h2>
+                    </div>
+                </div>
+
+                <div class="timeline-container">
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><i class="fa-solid fa-train"></i></div>
+                        <h3 class="font-bold text-lg text-ita-green">08:20 國鐵前往 Varenna</h3>
+                        <p class="text-sm text-gray-600 mt-1">從 Milano Centrale 出發前往科莫湖區。</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><i class="fa-solid fa-heart text-ita-red"></i></div>
+                        <h3 class="font-bold text-lg text-ita-green">
+                            <a href="https://maps.google.com/?q=景點名稱" target="_blank" class="hover:text-ita-red underline decoration-ita-red/30 underline-offset-4">上午 瓦倫納 情人步道</a>
+                        </h3>
+                        <p class="text-sm text-gray-600 mt-1">沿湖壁搭建的紅色浪漫步道，抵達彩色斑駁的舊城港灣。</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><i class="fa-solid fa-camera-retro text-ita-red"></i></div>
+                        <h3 class="font-bold text-lg text-ita-green">
+                            <a href="https://maps.google.com/?q=景點名稱" target="_blank" class="hover:text-ita-red underline decoration-ita-red/30 underline-offset-4">中午 貝拉焦 經典階梯巷弄</a>
+                        </h3>
+                        <p class="text-sm text-gray-600 mt-1">科莫湖明信片打卡點，鵝卵石陡坡與兩旁精美商店。</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><i class="fa-solid fa-ship text-ita-gold"></i></div>
+                        <h3 class="font-bold text-lg text-ita-green">
+                            <a href="https://maps.google.com/?q=景點名稱" target="_blank" class="hover:text-ita-gold underline decoration-ita-gold/30 underline-offset-4">下午 搭乘慢船 Battello</a>
+                        </h3>
+                        <p class="text-sm text-gray-600 mt-1">享受 2 小時航程，欣賞兩岸好萊塢明星豪宅與古老別墅。</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><i class="fa-solid fa-train"></i></div>
+                        <h3 class="font-bold text-lg text-ita-green">19:35 返回米蘭</h3>
+                        <p class="text-sm text-gray-600 mt-1">搭乘義大利國鐵回米蘭，隔日搭機返台。</p>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <section id="sec-customs" class="tab-content hidden animate-[fadeIn_0.3s_ease-out]">
+            <div class="flex justify-between items-end mb-6 border-b-2 border-ita-green pb-2">
+                <h2 class="text-xl font-bold text-ita-green"><i class="fa-solid fa-file-lines mr-2"></i><span data-zh="行程總表" data-en="Itinerary Summary">行程總表</span></h2>
+                <button onclick="toggleLang()" class="bg-ita-red text-white px-3 py-1 rounded shadow text-sm hover:bg-red-800 transition">
+                    <i class="fa-solid fa-language mr-1"></i> 🔤 切換 / Toggle
+                </button>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow overflow-hidden text-sm">
+                <table class="w-full text-left">
+                    <thead class="bg-ita-green/10 text-ita-green font-bold">
+                        <tr>
+                            <th class="p-3" data-zh="日期" data-en="Date">日期</th>
+                            <th class="p-3" data-zh="城市" data-en="City">城市</th>
+                            <th class="p-3" data-zh="住宿" data-en="Hotel">住宿</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        <tr>
+                            <td class="p-3">Jun 2 - 6</td>
+                            <td class="p-3"><span data-zh="羅馬 Rome" data-en="Rome, Italy">羅馬 Rome</span></td>
+                            <td class="p-3 font-medium">Paci luxury suite</td>
+                        </tr>
+                        <tr>
+                            <td class="p-3">Jun 6 - 9</td>
+                            <td class="p-3"><span data-zh="佛羅倫斯 Florence" data-en="Florence, Italy">佛羅倫斯 Florence</span></td>
+                            <td class="p-3 font-medium">Hotel Astrid</td>
+                        </tr>
+                        <tr>
+                            <td class="p-3">Jun 9 - 10</td>
+                            <td class="p-3"><span data-zh="波隆納 Bologna" data-en="Bologna, Italy">波隆納 Bologna</span></td>
+                            <td class="p-3 font-medium">Hotel Cavour</td>
+                        </tr>
+                        <tr>
+                            <td class="p-3">Jun 10 - 11</td>
+                            <td class="p-3"><span data-zh="威尼斯 Venice" data-en="Venice, Italy">威尼斯 Venice</span></td>
+                            <td class="p-3 font-medium">Combo Venezia</td>
+                        </tr>
+                        <tr>
+                            <td class="p-3">Jun 11 - 15</td>
+                            <td class="p-3"><span data-zh="米蘭 Milan" data-en="Milan, Italy">米蘭 Milan</span></td>
+                            <td class="p-3 font-medium">Hotel Atlantic</td>
+                        </tr>
+                        <tr class="bg-gray-50">
+                            <td class="p-3">Jun 16</td>
+                            <td class="p-3" colspan="2"><span data-zh="MXP 機場返台" data-en="Return from MXP to TPE">MXP 機場返台</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-4 p-4 bg-yellow-50 border-l-4 border-yellow-400 text-sm text-gray-700">
+                <i class="fa-solid fa-lightbulb text-yellow-500 mr-2"></i>
+                <span data-zh="海關若詢問來訪目的，請出示此表並回答「Sightseeing (觀光)」即可。" data-en="If immigration asks for your purpose of visit, show this and say 'Sightseeing'.">海關若詢問來訪目的，請出示此表並回答「Sightseeing (觀光)」即可。</span>
+            </div>
+        </section>
+
+        <section id="sec-info" class="tab-content hidden animate-[fadeIn_0.3s_ease-out]">
+            <h2 class="text-xl font-bold text-ita-green mb-4"><i class="fa-solid fa-map-location-dot mr-2"></i>目的地地圖</h2>
+            <div class="w-full h-64 bg-gray-200 rounded-lg overflow-hidden shadow mb-8">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d11880.492291371422!2d12.4922309!3d41.8902102!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x132f61b6532013ad%3A0x28f1c82e908503c4!2sColosseum!5e0!3m2!1sen!2stw!4v1700000000000!5m2!1sen!2stw" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+
+            <h2 class="text-xl font-bold text-ita-green mb-4"><i class="fa-solid fa-suitcase-rolling mr-2"></i>行李 Checklist</h2>
+            <div class="bg-white p-4 rounded-lg shadow mb-8">
+                <ul class="space-y-2 text-gray-700 text-sm">
+                    <li><label class="flex items-center"><input type="checkbox" class="mr-3 w-4 h-4 text-ita-green accent-ita-green"> 護照正本與影本</label></li>
+                    <li><label class="flex items-center"><input type="checkbox" class="mr-3 w-4 h-4 text-ita-green accent-ita-green"> 歐元現金與信用卡 (需預留硬幣投許願池與付小費)</label></li>
+                    <li><label class="flex items-center"><input type="checkbox" class="mr-3 w-4 h-4 text-ita-green accent-ita-green"> 歐洲通用轉接頭 & 行動電源</label></li>
+                    <li><label class="flex items-center"><input type="checkbox" class="mr-3 w-4 h-4 text-ita-green accent-ita-green"> 防扒防竊包、手機掛繩</label></li>
+                    <li><label class="flex items-center"><input type="checkbox" class="mr-3 w-4 h-4 text-ita-green accent-ita-green"> 舒適好走的鞋子 (羅馬多為石板路)</label></li>
+                </ul>
+            </div>
+
+            <h2 class="text-xl font-bold text-ita-green mb-4"><i class="fa-solid fa-gift mr-2"></i>推薦伴手禮清單</h2>
+            <div class="bg-white p-4 rounded-lg shadow mb-8">
+                <ul class="list-disc pl-5 space-y-2 text-gray-700 text-sm">
+                    <li><strong>金杯咖啡：</strong> 女王咖啡豆 (La Regina dei Caffè)、咖啡豆巧克力球</li>
+                    <li><strong>佛羅倫斯皮件：</strong> 中央市場外皮件街 (記得殺價)</li>
+                    <li><strong>超市必買：</strong> Amedei 巧克力、Marvis 牙膏、Baci 巧克力</li>
+                    <li><strong>彩妝保養：</strong> KIKO Milano 平價彩妝、蕾莉歐 L'ERBOLARIO</li>
+                </ul>
+            </div>
+        </section>
+
+    </main>
+
+    <div id="taxiModal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4 opacity-0 pointer-events-none">
+        <div class="bg-white rounded-2xl w-full max-w-sm p-6 text-center transform scale-95 modal-content relative">
+            <button onclick="closeTaxi()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-800 text-2xl leading-none">&times;</button>
+            <div class="text-ita-red text-5xl mb-4"><i class="fa-solid fa-taxi"></i></div>
+            <h2 class="text-2xl font-bold mb-2 text-gray-800">Scusi, vorrei andare a:</h2>
+            <p class="text-sm text-gray-500 mb-6">(不好意思，我想去：)</p>
+            
+            <div class="bg-gray-100 p-4 rounded-lg mb-6 border-2 border-ita-green border-dashed">
+                <div id="taxiHotel" class="text-2xl font-bold text-ita-green mb-2">Hotel Name</div>
+                <div id="taxiAddress" class="text-xl font-medium text-gray-800">Address</div>
+            </div>
+            
+            <p class="text-2xl font-bold text-ita-red">Grazie!</p>
+            <p class="text-sm text-gray-500">(謝謝)</p>
+        </div>
+    </div>
+
+    <script>
+        // 切換主頁籤 (行程表 / 通關英文 / 實用資訊)
+        function switchTab(tabId) {
+            // 重置按鈕樣式
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-ita-red', 'text-white');
+                btn.classList.add('border-transparent', 'text-ita-white/60');
+            });
+            // 啟動當前按鈕
+            const activeBtn = document.getElementById('tab-' + tabId);
+            activeBtn.classList.remove('border-transparent', 'text-ita-white/60');
+            activeBtn.classList.add('border-ita-red', 'text-white');
+
+            // 隱藏所有內容區塊
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+                content.classList.remove('block');
+            });
+            // 顯示目標區塊
+            const targetContent = document.getElementById('sec-' + tabId);
+            targetContent.classList.remove('hidden');
+            targetContent.classList.add('block');
+        }
+
+        // 行程表內切換天數
+        function showDay(dayIndex) {
+            // 重置按鈕樣式
+            document.querySelectorAll('.day-btn').forEach(btn => {
+                btn.classList.remove('bg-ita-green', 'text-white');
+                btn.classList.add('bg-gray-100', 'text-gray-600');
+            });
+            // 啟動點擊的按鈕
+            const clickedBtn = event.target;
+            clickedBtn.classList.remove('bg-gray-100', 'text-gray-600');
+            clickedBtn.classList.add('bg-ita-green', 'text-white');
+
+            // 隱藏所有天數內容
+            document.querySelectorAll('.day-content').forEach(content => {
+                content.classList.add('hidden');
+                content.classList.remove('block');
+            });
+            // 顯示目標天數
+            const targetDay = document.getElementById('day-' + dayIndex);
+            if(targetDay) {
+                targetDay.classList.remove('hidden');
+                targetDay.classList.add('block');
+            }
+        }
+
+        // 計程車卡 Modal 控制
+        const modal = document.getElementById('taxiModal');
+        const modalContent = modal.querySelector('.modal-content');
+        
+        function openTaxi(hotelName, address) {
+            document.getElementById('taxiHotel').innerText = hotelName;
+            document.getElementById('taxiAddress').innerText = address;
+            modal.classList.remove('hidden', 'pointer-events-none');
+            // 小延遲以觸發 CSS 漸變動畫
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modalContent.classList.remove('scale-95');
+                modalContent.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeTaxi() {
+            modal.classList.add('opacity-0');
+            modalContent.classList.remove('scale-100');
+            modalContent.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden', 'pointer-events-none');
+            }, 300); // 等待動畫結束
+        }
+
+        // 中英切換邏輯
+        let isEn = false;
+        function toggleLang() {
+            isEn = !isEn;
+            document.querySelectorAll('[data-zh]').forEach(el => {
+                if (isEn) {
+                    el.innerText = el.getAttribute('data-en');
+                } else {
+                    el.innerText = el.getAttribute('data-zh');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
